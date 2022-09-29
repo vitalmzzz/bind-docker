@@ -1,0 +1,32 @@
+$TTL {{ bind_value_ttl | default("1h") }}
+
+{% for soa_record in item.soa_record %}
+{{ soa_record.name }}    IN    SOA    {{ soa_record.value1 }}  {{ soa_record.value2 }}(
+{% endfor %}
+
+{% for soa_conf in bind_soa_conf %}
+{{ soa_conf.serial }} ; Serial
+{{ soa_conf.refresh }} ; Refresh 
+{{ soa_conf.retry }} ; Retry
+{{ soa_conf.expire }} ; Expire
+{{ soa_conf.minimum }}) ; Minimum
+{% endfor %}
+
+{% for default_record in item.default_record %}
+{{ default_record.name }}    IN    {{ default_record.type }}    {{ default_record.value }}
+{% endfor %}
+
+{% for type_a in item.type_data_a %}
+{% set count_a = ( type_a.name | length ) %}
+{% set result_a = (25 - count_a) %}
+{% set space_a = (result_a*" ") %}
+{{ type_a.name }} {{ space_a }} IN    A    {{ type_a.value }}
+{% endfor %}
+
+{% for type_cname in item.type_data_cname %}
+{% set count_cname = ( type_cname.name | length ) %}
+{% set result_cname = (25 - count_cname) %}
+{% set space_cname = (result_cname*" ") %}
+{{ type_cname.name }} {{ space_cname }} IN    CNAME    {{ type_cname.value }}
+{% endfor %}
+

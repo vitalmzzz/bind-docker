@@ -1,0 +1,5 @@
+---
+- name: restart-bind
+  become: True
+  shell:
+    cmd: "docker exec -it {{ bind_docker_name }} {{ bind_service_path }} force-reload"

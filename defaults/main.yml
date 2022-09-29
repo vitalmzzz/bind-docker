@@ -1,0 +1,10 @@
+---
+#Default values of variables
+bind_value_ttl: "1h"
+bind_conf_path: "/opt/bind/bind/etc"
+bind_service_path: "/etc/init.d/bind9"
+bind_docker_name: "bind_docker_bind_1"
+bind_images: "server:5000/sameersbn/bind"
+
+bind_soa_conf:
+  - { serial: "2008122601", refresh: "28800", retry: "14400", expire: "604800", minimum: "86400" }

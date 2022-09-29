@@ -1,0 +1,43 @@
+---
+# Install bind package.
+- name: "Install bind"
+  package:
+    name: bind
+    state: installed
+
+# Stop bind service.
+- name: "Stop service bind"
+  systemd:
+    name: named
+    state: stopped
+    enabled: false    
+
+- name: "Copy data file in host"
+  template:
+    src: db.j2
+    dest: "{{ bind_conf_path }}/{{ item.name }}"
+    mode: 0755
+    validate: 'named-checkzone -d {{ item.name }} %s'
+    backup: true
+  with_items:
+    - "{{ bind_efp_zone }}"
+    - "{{ bind_mosru_zone }}"
+  notify:
+    - restart-bind
+
+# Install python-pip package.
+- name: "Install python-pip"
+  package:
+    name: python-pip
+    state: present
+
+# Install (docker-py) python package.
+- pip:
+    name: docker-py
+
+- name: "Check and run container"
+  docker_container:
+    name: "{{ bind_docker_name }}"
+    state: started
+    image: "{{ bind_images }}"
+    
